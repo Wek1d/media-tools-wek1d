@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Media Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: var(--dark);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .header {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #0d9488;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 500px;
+        }
+
+        .drop-area {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            border: 2px dashed var(--gray);
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drop-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .drop-area.highlight {
+            border-color: var(--primary);
+            background-color: rgba(99, 102, 241, 0.2);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
+        .drop-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .drop-area h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .drop-area p {
+            color: var(--gray);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .drop-area .btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .media-container {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .media-preview-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .media-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-origin: center center;
+            transition: var(--transition);
+        }
+
+        .media-preview img, .media-preview video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+
+        .edit-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group h4 {
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .control-btn:hover {
+            background-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .slider-container {
+            width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider {
+            flex-grow: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .file-info {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .file-info i {
+            color: var(--primary);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background-color: var(--danger);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .content {
+                padding: 20px 10px;
+            }
+            
+            .edit-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-group {
+                width: 100%;
+            }
+            
+            .slider-container {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-photo-video"></i>
+                <span>Advanced Media Editor</span>
+            </div>
+            <div class="controls" id="topControls" style="display: none;">
+                <button class="btn btn-success" onclick="downloadMedia()">
+                    <i class="fas fa-download"></i> İndir
+                </button>
+                <button class="btn btn-danger" onclick="resetAll()">
+                    <i class="fas fa-trash-alt"></i> Sıfırla
+                </button>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="drop-area" id="dropArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Medya Dosyasını Sürükleyip Bırakın</h3>
+                <p>veya</p>
+                <button class="btn" id="selectFileBtn">
+                    <i class="fas fa-folder-open"></i> Dosya Seçin
+                </button>
+                <input type="file" id="fileInput" accept="image/*, video/*" style="display: none;">
+            </div>
+            
+            <div class="media-container" id="mediaContainer">
+                <div class="media-preview-container">
+                    <div class="media-preview" id="mediaPreview">
+                        <img id="uploadedImage" src="#" alt="Yüklenen Resim" style="display: none;">
+                        <video id="uploadedVideo" src="#" controls style="display: none;"></video>
+                    </div>
+                </div>
+                
+                <div class="edit-controls">
+                    <div class="control-group">
+                        <h4>Döndürme</h4>
+                        <div class="control-buttons">
+                            <button class="control-btn" onclick="rotateMedia(-90)" title="Sola Döndür">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                            <button class="control-btn" onclick="rotateMedia(90)" title="Sağa Döndür">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                            <button class="control-btn" onclick="resetRotation()" title="Sıfırla">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h4>Yakınlaştırma</h4>
+                        <div class="control-buttons">
+                            <button class="control-btn" onclick="zoomIn()" title="Yakınlaştır">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="control-btn" onclick="zoomOut()" title="Uzaklaştır">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <button class="control-btn" onclick="resetZoom()" title="Sıfırla">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="slider-container">
+                            <i class="fas fa-search" style="color: var(--gray);"></i>
+                            <input type="range" min="10" max="200" value="100" class="slider" id="zoomSlider" oninput="updateZoom()">
+                            <span id="zoomValue">100%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h4>Parlaklık</h4>
+                        <div class="slider-container">
+                            <i class="fas fa-sun" style="color: var(--gray);"></i>
+                            <input type="range" min="0" max="200" value="100" class="slider" id="brightnessSlider" oninput="updateBrightness()">
+                            <span id="brightnessValue">100%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h4>Kontrast</h4>
+                        <div class="slider-container">
+                            <i class="fas fa-adjust" style="color: var(--gray);"></i>
+                            <input type="range" min="0" max="200" value="100" class="slider" id="contrastSlider" oninput="updateContrast()">
+                            <span id="contrastValue">100%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-controls">
+                    <button class="filter-btn active" onclick="applyFilter('none')">Normal</button>
+                    <button class="filter-btn" onclick="applyFilter('grayscale(100%)')">Siyah-Beyaz</button>
+                    <button class="filter-btn" onclick="applyFilter('sepia(100%)')">Sepia</button>
+                    <button class="filter-btn" onclick="applyFilter('invert(100%)')">Invert</button>
+                    <button class="filter-btn" onclick="applyFilter('hue-rotate(90deg)')">Renk Döndür</button>
+                    <button class="filter-btn" onclick="applyFilter('blur(2px)')">Blur</button>
+                    <button class="filter-btn" onclick="applyFilter('saturate(200%)')">Doygunluk</button>
+                </div>
+                
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="fileName"></span>
+                    <span id="fileSize"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">İşlem başarılı!</span>
+    </div>
+
+    <script>
+        // DOM Elements
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+        const selectFileBtn = document.getElementById('selectFileBtn');
+        const mediaContainer = document.getElementById('mediaContainer');
+        const mediaPreview = document.getElementById('mediaPreview');
+        const uploadedImage = document.getElementById('uploadedImage');
+        const uploadedVideo = document.getElementById('uploadedVideo');
+        const topControls = document.getElementById('topControls');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        // Sliders
+        const zoomSlider = document.getElementById('zoomSlider');
+        const zoomValue = document.getElementById('zoomValue');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+        const brightnessValue = document.getElementById('brightnessValue');
+        const contrastSlider = document.getElementById('contrastSlider');
+        const contrastValue = document.getElementById('contrastValue');
+        
+        // State variables
+        let currentRotation = 0;
+        let currentScale = 1;
+        let currentBrightness = 1;
+        let currentContrast = 1;
+        let currentFilter = 'none';
+        let isImage = true;
+        let currentFile = null;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        
+        // Event Listeners
+        selectFileBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+        
+        // Drag and drop events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.classList.add('highlight');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('highlight');
+        }
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            if (file) handleFile(file);
+        }
+        
+        // Paste from clipboard
+        document.addEventListener('paste', (e) => {
+            const items = e.clipboardData.items;
+            for (let item of items) {
+                if (item.type.indexOf('image') !== -1 || item.type.indexOf('video') !== -1) {
+                    const file = item.getAsFile();
+                    if (file) {
+                        handleFile(file);
+                        showToast('Medya panodan yapıştırıldı');
+                    }
+                    break;
+                }
+            }
+        });
+        
+        // Handle file
+        function handleFile(file) {
+            if (!file.type.match('image.*') && !file.type.match('video.*')) {
+                showToast('Sadece resim ve video dosyaları desteklenmektedir', 'error');
+                return;
+            }
+            
+            currentFile = file;
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                if (file.type.match('image.*')) {
+                    uploadedImage.src = e.target.result;
+                    uploadedImage.style.display = 'block';
+                    uploadedVideo.style.display = 'none';
+                    uploadedVideo.pause();
+                    isImage = true;
+                } else if (file.type.match('video.*')) {
+                    uploadedVideo.src = e.target.result;
+                    uploadedImage.style.display = 'none';
+                    uploadedVideo.style.display = 'block';
+                    isImage = false;
+                }
+                
+                // Reset transformations for new file
+                resetAllTransformations();
+                
+                // Update file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'flex';
+                
+                // Show media container and controls
+                mediaContainer.style.display = 'flex';
+                topControls.style.display = 'flex';
+                dropArea.style.display = 'none';
+                
+                showToast('Medya başarıyla yüklendi');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Media transformations
+        function rotateMedia(degrees) {
+            currentRotation += degrees;
+            updateTransform();
+        }
+        
+        function resetRotation() {
+            currentRotation = 0;
+            updateTransform();
+        }
+        
+        function zoomIn() {
+            currentScale += 0.1;
+            zoomSlider.value = currentScale * 100;
+            zoomValue.textContent = Math.round(currentScale * 100) + '%';
+            updateTransform();
+        }
+        
+        function zoomOut() {
+            if (currentScale > 0.1) {
+                currentScale -= 0.1;
+                zoomSlider.value = currentScale * 100;
+                zoomValue.textContent = Math.round(currentScale * 100) + '%';
+                updateTransform();
+            }
+        }
+        
+        function resetZoom() {
+            currentScale = 1;
+            zoomSlider.value = 100;
+            zoomValue.textContent = '100%';
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        }
+        
+        function updateZoom() {
+            currentScale = zoomSlider.value / 100;
+            zoomValue.textContent = zoomSlider.value + '%';
+            updateTransform();
+        }
+        
+        function updateBrightness() {
+            currentBrightness = brightnessSlider.value / 100;
+            brightnessValue.textContent = brightnessSlider.value + '%';
+            updateTransform();
+        }
+        
+        function updateContrast() {
+            currentContrast = contrastSlider.value / 100;
+            contrastValue.textContent = contrastSlider.value + '%';
+            updateTransform();
+        }
+        
+        function applyFilter(filter) {
+            currentFilter = filter;
+            updateTransform();
+            
+            // Highlight active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function updateTransform() {
+            const transform = `
+                rotate(${currentRotation}deg) 
+                scale(${currentScale}) 
+                translate(${translateX}px, ${translateY}px)
+            `;
+            
+            // Apply different filters for images and videos
+            let filter = '';
+            if (isImage) {
+                filter = `
+                    brightness(${currentBrightness}) 
+                    contrast(${currentContrast}) 
+                    ${currentFilter}
+                `;
+            } else {
+                // For videos, only apply filters that work well
+                if (currentFilter.includes('blur') || currentFilter.includes('saturate')) {
+                    filter = currentFilter;
+                } else if (currentFilter !== 'none') {
+                    filter = currentFilter.replace(/\)$/, '') + ' brightness(' + currentBrightness + ') contrast(' + currentContrast + '))';
+                } else {
+                    filter = `
+                        brightness(${currentBrightness}) 
+                        contrast(${currentContrast})
+                    `;
+                }
+            }
+            
+            mediaPreview.style.transform = transform;
+            if (isImage) {
+                uploadedImage.style.filter = filter;
+                uploadedVideo.style.filter = 'none';
+            } else {
+                uploadedVideo.style.filter = filter;
+                uploadedImage.style.filter = 'none';
+            }
+        }
+        
+        // Drag to pan when zoomed
+        mediaPreview.addEventListener('mousedown', (e) => {
+            if (currentScale <= 1) return;
+            
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            mediaPreview.style.cursor = 'grabbing';
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateTransform();
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            mediaPreview.style.cursor = 'grab';
+        });
+        
+        // Touch events for mobile
+        mediaPreview.addEventListener('touchstart', (e) => {
+            if (currentScale <= 1) return;
+            
+            isDragging = true;
+            startX = e.touches[0].clientX - translateX;
+            startY = e.touches[0].clientY - translateY;
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            translateX = e.touches[0].clientX - startX;
+            translateY = e.touches[0].clientY - startY;
+            updateTransform();
+            e.preventDefault();
+        });
+        
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+        
+        function resetAllTransformations() {
+            currentRotation = 0;
+            currentScale = 1;
+            currentBrightness = 1;
+            currentContrast = 1;
+            currentFilter = 'none';
+            translateX = 0;
+            translateY = 0;
+            
+            zoomSlider.value = 100;
+            brightnessSlider.value = 100;
+            contrastSlider.value = 100;
+            
+            zoomValue.textContent = '100%';
+            brightnessValue.textContent = '100%';
+            contrastValue.textContent = '100%';
+            
+            updateTransform();
+            
+            // Reset active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === 'Normal') {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        // Download media with transformations (only for images)
+        function downloadMedia() {
+            if (!currentFile) return;
+            
+            if (isImage) {
+                downloadImageWithTransformations();
+            } else {
+                // For videos, we can't apply transformations in download
+                const link = document.createElement('a');
+                link.href = uploadedVideo.src;
+                link.download = 'edited_' + currentFile.name;
+                link.click();
+                showToast('Video indiriliyor (dönüşümler uygulanmadı)...');
+            }
+        }
+        
+        function downloadImageWithTransformations() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                // Calculate canvas size to fit the transformed image
+                const absScale = Math.abs(currentScale);
+                const rotatedWidth = Math.abs(img.width * Math.cos(currentRotation * Math.PI / 180)) + 
+                                   Math.abs(img.height * Math.sin(currentRotation * Math.PI / 180));
+                const rotatedHeight = Math.abs(img.height * Math.cos(currentRotation * Math.PI / 180)) + 
+                                    Math.abs(img.width * Math.sin(currentRotation * Math.PI / 180));
+                
+                canvas.width = rotatedWidth * absScale;
+                canvas.height = rotatedHeight * absScale;
+                
+                // Center the image
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                
+                // Apply rotation
+                ctx.rotate(currentRotation * Math.PI / 180);
+                
+                // Apply scale
+                ctx.scale(currentScale, currentScale);
+                
+                // Draw image
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                
+                // Create another canvas for filters
+                const filterCanvas = document.createElement('canvas');
+                const filterCtx = filterCanvas.getContext('2d');
+                filterCanvas.width = canvas.width;
+                filterCanvas.height = canvas.height;
+                
+                // Apply filters
+                filterCtx.filter = `
+                    brightness(${currentBrightness}) 
+                    contrast(${currentContrast}) 
+                    ${currentFilter}
+                `;
+                filterCtx.drawImage(canvas, 0, 0);
+                
+                // Convert to blob and download
+                filterCanvas.toBlob(blob => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'edited_' + currentFile.name;
+                    link.click();
+                    showToast('Düzenlenmiş resim indiriliyor...');
+                }, 'image/png');
+            };
+            
+            img.src = uploadedImage.src;
+        }
+        
+        // Reset all
+        function resetAll() {
+            uploadedImage.src = '#';
+            uploadedVideo.src = '#';
+            uploadedImage.style.display = 'none';
+            uploadedVideo.style.display = 'none';
+            uploadedVideo.pause();
+            
+            mediaContainer.style.display = 'none';
+            topControls.style.display = 'none';
+            fileInfo.style.display = 'none';
+            dropArea.style.display = 'flex';
+            
+            currentFile = null;
+            resetAllTransformations();
+            
+            // Reset file input
+            fileInput.value = '';
+        }
+        
+        // Toast notification
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = 'toast';
+            toast.classList.add(type === 'error' ? 'error' : 'success');
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
