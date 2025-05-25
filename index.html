@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Media Editor</title>
+    <title>Wekid Media Tools Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -225,6 +225,153 @@
             transition: var(--transition);
         }
 
+        /* Özel Video Kontrolleri */
+        .custom-video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .video-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .video-progress-filled {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .video-time {
+            font-size: 0.8rem;
+            color: var(--light);
+            white-space: nowrap;
+        }
+
+        .video-control-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .video-control-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .video-speed-control {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 12px;
+            padding-right: 25px;
+        }
+
+        .video-speed-control:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* Ses Kontrolü */
+        .volume-control {
+            position: relative;
+        }
+
+        .volume-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .volume-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .volume-slider-container {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 15px 10px;
+            border-radius: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .volume-slider {
+            height: 100px;
+            width: 6px;
+            -webkit-appearance: slider-vertical;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Fullscreen butonu */
+        .fullscreen-btn {
+            margin-left: auto;
+        }
+
         .edit-controls {
             display: flex;
             flex-wrap: wrap;
@@ -373,6 +520,36 @@
             transform: translateY(-2px);
         }
 
+        /* Ekstra Özellikler */
+        .advanced-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .crop-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .crop-btn:hover {
+            background-color: var(--primary);
+        }
+
+        .crop-controls {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 border-radius: 0;
@@ -403,7 +580,7 @@
         <div class="header">
             <div class="logo">
                 <i class="fas fa-photo-video"></i>
-                <span>Advanced Media Editor</span>
+                <span>Wekid Media Tools Pro</span>
             </div>
             <div class="controls" id="topControls" style="display: none;">
                 <button class="btn btn-success" onclick="downloadMedia()">
@@ -427,10 +604,47 @@
             </div>
             
             <div class="media-container" id="mediaContainer">
-                <div class="media-preview-container">
+                <div class="media-preview-container" id="mediaPreviewContainer">
                     <div class="media-preview" id="mediaPreview">
                         <img id="uploadedImage" src="#" alt="Yüklenen Resim" style="display: none;">
-                        <video id="uploadedVideo" src="#" controls style="display: none;"></video>
+                        <video id="uploadedVideo" src="#" style="display: none;"></video>
+                    </div>
+                    
+                    <!-- Özel Video Kontrolleri -->
+                    <div class="custom-video-controls" id="customVideoControls">
+                        <div class="video-progress" id="videoProgress">
+                            <div class="video-progress-filled" id="videoProgressFilled"></div>
+                        </div>
+                        <div class="video-controls-row">
+                            <button class="video-control-btn" id="playPauseBtn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <span class="video-time" id="currentTime">00:00</span>
+                            <span class="video-time">/</span>
+                            <span class="video-time" id="totalTime">00:00</span>
+                            
+                            <div class="volume-control">
+                                <button class="volume-btn" id="volumeBtn">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <div class="volume-slider-container" id="volumeSliderContainer">
+                                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" orient="vertical">
+                                </div>
+                            </div>
+                            
+                            <select class="video-speed-control" id="speedControl">
+                                <option value="0.5">0.5x</option>
+                                <option value="0.75">0.75x</option>
+                                <option value="1" selected>1x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2">2x</option>
+                            </select>
+                            
+                            <button class="video-control-btn fullscreen-btn" id="fullscreenBtn">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
@@ -490,13 +704,37 @@
                 </div>
                 
                 <div class="filter-controls">
-                    <button class="filter-btn active" onclick="applyFilter('none')">Normal</button>
-                    <button class="filter-btn" onclick="applyFilter('grayscale(100%)')">Siyah-Beyaz</button>
-                    <button class="filter-btn" onclick="applyFilter('sepia(100%)')">Sepia</button>
-                    <button class="filter-btn" onclick="applyFilter('invert(100%)')">Invert</button>
-                    <button class="filter-btn" onclick="applyFilter('hue-rotate(90deg)')">Renk Döndür</button>
-                    <button class="filter-btn" onclick="applyFilter('blur(2px)')">Blur</button>
-                    <button class="filter-btn" onclick="applyFilter('saturate(200%)')">Doygunluk</button>
+                    <button class="filter-btn active" onclick="applyFilter('none', this)">Normal</button>
+                    <button class="filter-btn" onclick="applyFilter('grayscale(100%)', this)">Siyah-Beyaz</button>
+                    <button class="filter-btn" onclick="applyFilter('sepia(100%)', this)">Sepia</button>
+                    <button class="filter-btn" onclick="applyFilter('invert(100%)', this)">Invert</button>
+                    <button class="filter-btn" onclick="applyFilter('hue-rotate(90deg)', this)">Renk Döndür</button>
+                    <button class="filter-btn" onclick="applyFilter('blur(2px)', this)">Blur</button>
+                    <button class="filter-btn" onclick="applyFilter('saturate(200%)', this)">Doygunluk</button>
+                </div>
+                
+                <!-- Ekstra Özellikler -->
+                <div class="advanced-controls">
+                    <button class="crop-btn" id="cropBtn" onclick="toggleCropControls()">
+                        <i class="fas fa-crop"></i> Kırpma
+                    </button>
+                    <button class="crop-btn" onclick="flipMedia('horizontal')">
+                        <i class="fas fa-arrows-alt-h"></i> Yatay Çevir
+                    </button>
+                    <button class="crop-btn" onclick="flipMedia('vertical')">
+                        <i class="fas fa-arrows-alt-v"></i> Dikey Çevir
+                    </button>
+                </div>
+                
+                <div class="crop-controls" id="cropControls">
+                    <div class="slider-container">
+                        <i class="fas fa-crop" style="color: var(--gray);"></i>
+                        <input type="range" min="0" max="100" value="0" class="slider" id="cropSlider" oninput="updateCrop()">
+                        <span id="cropValue">0%</span>
+                    </div>
+                    <button class="btn" onclick="applyCrop()">
+                        <i class="fas fa-check"></i> Uygula
+                    </button>
                 </div>
                 
                 <div class="file-info" id="fileInfo" style="display: none;">
@@ -520,6 +758,7 @@
         const selectFileBtn = document.getElementById('selectFileBtn');
         const mediaContainer = document.getElementById('mediaContainer');
         const mediaPreview = document.getElementById('mediaPreview');
+        const mediaPreviewContainer = document.getElementById('mediaPreviewContainer');
         const uploadedImage = document.getElementById('uploadedImage');
         const uploadedVideo = document.getElementById('uploadedVideo');
         const topControls = document.getElementById('topControls');
@@ -528,6 +767,23 @@
         const fileSize = document.getElementById('fileSize');
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
+        const cropBtn = document.getElementById('cropBtn');
+        const cropControls = document.getElementById('cropControls');
+        const cropSlider = document.getElementById('cropSlider');
+        const cropValue = document.getElementById('cropValue');
+        
+        // Video Control Elements
+        const customVideoControls = document.getElementById('customVideoControls');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const videoProgress = document.getElementById('videoProgress');
+        const videoProgressFilled = document.getElementById('videoProgressFilled');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const totalTimeDisplay = document.getElementById('totalTime');
+        const volumeBtn = document.getElementById('volumeBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeSliderContainer = document.getElementById('volumeSliderContainer');
+        const speedControl = document.getElementById('speedControl');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
         
         // Sliders
         const zoomSlider = document.getElementById('zoomSlider');
@@ -547,6 +803,13 @@
         let currentFile = null;
         let isDragging = false;
         let startX, startY, translateX = 0, translateY = 0;
+        let isVideoPlaying = false;
+        let isVolumeOpen = false;
+        let hideControlsTimeout;
+        let hideVolumeTimeout;
+        let currentFlip = '';
+        let isCropping = false;
+        let originalImageSrc = '';
         
         // Event Listeners
         selectFileBtn.addEventListener('click', () => fileInput.click());
@@ -621,11 +884,15 @@
                     uploadedImage.style.display = 'block';
                     uploadedVideo.style.display = 'none';
                     uploadedVideo.pause();
+                    customVideoControls.style.display = 'none';
                     isImage = true;
+                    originalImageSrc = e.target.result;
                 } else if (file.type.match('video.*')) {
                     uploadedVideo.src = e.target.result;
                     uploadedImage.style.display = 'none';
                     uploadedVideo.style.display = 'block';
+                    customVideoControls.style.display = 'flex';
+                    setupVideoControls();
                     isImage = false;
                 }
                 
@@ -655,6 +922,147 @@
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Video Controls Setup
+        function setupVideoControls() {
+            // Reset video state
+            isVideoPlaying = false;
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            
+            // Event listeners for video
+            uploadedVideo.addEventListener('play', () => {
+                isVideoPlaying = true;
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            });
+            
+            uploadedVideo.addEventListener('pause', () => {
+                isVideoPlaying = false;
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            });
+            
+            uploadedVideo.addEventListener('timeupdate', updateVideoProgress);
+            uploadedVideo.addEventListener('loadedmetadata', () => {
+                totalTimeDisplay.textContent = formatTime(uploadedVideo.duration);
+            });
+            
+            uploadedVideo.addEventListener('ended', () => {
+                isVideoPlaying = false;
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                uploadedVideo.currentTime = 0;
+                updateVideoProgress();
+            });
+            
+            // Control buttons
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            
+            videoProgress.addEventListener('click', (e) => {
+                const rect = videoProgress.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                uploadedVideo.currentTime = pos * uploadedVideo.duration;
+            });
+            
+            volumeBtn.addEventListener('click', toggleVolumeSlider);
+            
+            volumeSlider.addEventListener('input', () => {
+                uploadedVideo.volume = volumeSlider.value;
+                updateVolumeIcon();
+                // Otomatik kapanma süresini sıfırla
+                clearTimeout(hideVolumeTimeout);
+                hideVolumeTimeout = setTimeout(() => {
+                    volumeSliderContainer.style.display = 'none';
+                    isVolumeOpen = false;
+                }, 2000);
+            });
+            
+            speedControl.addEventListener('change', () => {
+                uploadedVideo.playbackRate = parseFloat(speedControl.value);
+            });
+            
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            // Video kapsayıcısına tıklayınca play/pause
+            mediaPreviewContainer.addEventListener('click', (e) => {
+                if (!isImage && e.target.id !== 'volumeSlider' && e.target.id !== 'speedControl') {
+                    togglePlayPause();
+                }
+            });
+            
+            // Hide controls when not interacting
+            mediaPreview.addEventListener('mousemove', showVideoControls);
+            customVideoControls.addEventListener('mouseleave', startHideControlsTimer);
+        }
+        
+        function togglePlayPause() {
+            if (isVideoPlaying) {
+                uploadedVideo.pause();
+            } else {
+                uploadedVideo.play();
+            }
+        }
+        
+        function updateVideoProgress() {
+            const percent = (uploadedVideo.currentTime / uploadedVideo.duration) * 100;
+            videoProgressFilled.style.width = `${percent}%`;
+            currentTimeDisplay.textContent = formatTime(uploadedVideo.currentTime);
+        }
+        
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function toggleVolumeSlider() {
+            isVolumeOpen = !isVolumeOpen;
+            volumeSliderContainer.style.display = isVolumeOpen ? 'flex' : 'none';
+            
+            if (isVolumeOpen) {
+                // 2 saniye sonra otomatik kapat
+                clearTimeout(hideVolumeTimeout);
+                hideVolumeTimeout = setTimeout(() => {
+                    volumeSliderContainer.style.display = 'none';
+                    isVolumeOpen = false;
+                }, 2000);
+            }
+        }
+        
+        function updateVolumeIcon() {
+            if (uploadedVideo.volume === 0) {
+                volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else if (uploadedVideo.volume < 0.5) {
+                volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+            } else {
+                volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                mediaPreviewContainer.requestFullscreen().catch(err => {
+                    showToast('Tam ekran hatası: ' + err.message, 'error');
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        function showVideoControls() {
+            customVideoControls.style.display = 'flex';
+            clearTimeout(hideControlsTimeout);
+            hideControlsTimeout = setTimeout(hideVideoControls, 3000);
+        }
+        
+        function hideVideoControls() {
+            if (isVideoPlaying) {
+                customVideoControls.style.display = 'none';
+            }
+        }
+        
+        function startHideControlsTimer() {
+            if (isVideoPlaying) {
+                hideControlsTimeout = setTimeout(hideVideoControls, 2000);
+            }
         }
         
         // Media transformations
@@ -711,7 +1119,7 @@
             updateTransform();
         }
         
-        function applyFilter(filter) {
+        function applyFilter(filter, btn) {
             currentFilter = filter;
             updateTransform();
             
@@ -719,7 +1127,7 @@
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            btn.classList.add('active');
         }
         
         function updateTransform() {
@@ -727,6 +1135,7 @@
                 rotate(${currentRotation}deg) 
                 scale(${currentScale}) 
                 translate(${translateX}px, ${translateY}px)
+                ${currentFlip}
             `;
             
             // Apply different filters for images and videos
@@ -737,6 +1146,8 @@
                     contrast(${currentContrast}) 
                     ${currentFilter}
                 `;
+                uploadedImage.style.filter = filter;
+                uploadedVideo.style.filter = 'none';
             } else {
                 // For videos, only apply filters that work well
                 if (currentFilter.includes('blur') || currentFilter.includes('saturate')) {
@@ -749,16 +1160,89 @@
                         contrast(${currentContrast})
                     `;
                 }
-            }
-            
-            mediaPreview.style.transform = transform;
-            if (isImage) {
-                uploadedImage.style.filter = filter;
-                uploadedVideo.style.filter = 'none';
-            } else {
                 uploadedVideo.style.filter = filter;
                 uploadedImage.style.filter = 'none';
             }
+            
+            mediaPreview.style.transform = transform;
+        }
+        
+        // Flip media
+        function flipMedia(direction) {
+            if (direction === 'horizontal') {
+                currentFlip = currentFlip.includes('scaleX(-1)') ? '' : 'scaleX(-1)';
+            } else {
+                currentFlip = currentFlip.includes('scaleY(-1)') ? '' : 'scaleY(-1)';
+            }
+            updateTransform();
+        }
+        
+        // Crop controls
+        function toggleCropControls() {
+            isCropping = !isCropping;
+            cropControls.style.display = isCropping ? 'flex' : 'none';
+            
+            if (isCropping && isImage) {
+                // Kırpma moduna geçtiğinde orijinal resmi yükle
+                uploadedImage.src = originalImageSrc;
+                resetAllTransformations();
+            }
+        }
+        
+        function updateCrop() {
+            if (!isImage) return;
+            
+            const cropPercent = cropSlider.value;
+            cropValue.textContent = `${cropPercent}%`;
+            
+            // Önizleme yapmak için CSS ile kırpma
+            const borderRadius = getComputedStyle(document.documentElement).getPropertyValue('--border-radius');
+uploadedImage.style.clipPath = `inset(${cropValue / 2}% round ${borderRadius})`;
+        }
+        
+        function applyCrop() {
+            if (!isImage || cropSlider.value == 0) {
+                toggleCropControls();
+                return;
+            }
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = function() {
+                const cropPercent = cropSlider.value / 100;
+                const cropPixels = Math.min(img.width, img.height) * cropPercent / 2;
+                
+                canvas.width = img.width - (cropPixels * 2);
+                canvas.height = img.height - (cropPixels * 2);
+                
+                ctx.drawImage(
+                    img, 
+                    cropPixels, 
+                    cropPixels, 
+                    canvas.width, 
+                    canvas.height, 
+                    0, 
+                    0, 
+                    canvas.width, 
+                    canvas.height
+                );
+                
+                // Yeni kırpılmış resmi yükle
+                uploadedImage.src = canvas.toDataURL();
+                originalImageSrc = uploadedImage.src;
+                
+                // Kırpma kontrollerini kapat
+                toggleCropControls();
+                cropSlider.value = 0;
+                cropValue.textContent = '0%';
+                uploadedImage.style.clipPath = '';
+                
+                showToast('Resim başarıyla kırpıldı');
+            };
+            
+            img.src = originalImageSrc;
         }
         
         // Drag to pan when zoomed
@@ -812,6 +1296,7 @@
             currentBrightness = 1;
             currentContrast = 1;
             currentFilter = 'none';
+            currentFlip = '';
             translateX = 0;
             translateY = 0;
             
@@ -822,6 +1307,10 @@
             zoomValue.textContent = '100%';
             brightnessValue.textContent = '100%';
             contrastValue.textContent = '100%';
+            
+            if (isImage) {
+                uploadedImage.style.clipPath = '';
+            }
             
             updateTransform();
             
@@ -872,8 +1361,14 @@
                 // Apply rotation
                 ctx.rotate(currentRotation * Math.PI / 180);
                 
-                // Apply scale
-                ctx.scale(currentScale, currentScale);
+                // Apply scale and flip
+                let scaleX = currentScale;
+                let scaleY = currentScale;
+                
+                if (currentFlip.includes('scaleX(-1)')) scaleX *= -1;
+                if (currentFlip.includes('scaleY(-1)')) scaleY *= -1;
+                
+                ctx.scale(scaleX, scaleY);
                 
                 // Draw image
                 ctx.drawImage(img, -img.width / 2, -img.height / 2);
@@ -902,7 +1397,7 @@
                 }, 'image/png');
             };
             
-            img.src = uploadedImage.src;
+            img.src = originalImageSrc;
         }
         
         // Reset all
@@ -919,10 +1414,17 @@
             dropArea.style.display = 'flex';
             
             currentFile = null;
+            originalImageSrc = '';
             resetAllTransformations();
             
             // Reset file input
             fileInput.value = '';
+            
+            // Close crop controls if open
+            isCropping = false;
+            cropControls.style.display = 'none';
+            cropSlider.value = 0;
+            cropValue.textContent = '0%';
         }
         
         // Toast notification
