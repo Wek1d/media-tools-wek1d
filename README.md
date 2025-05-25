@@ -33,7 +33,7 @@ Projeyi yerel makinenizde çalıştırmak isterseniz aşağıdaki adımları tak
 
 1.  Depoyu klonlayın:
     ```bash
-    git clone [https://github.com/Wek1d/media-tools-wek1d.git](https://github.com/Wek1d/media-tools-wek1d.git)
+    git clone https://github.com/Wek1d/media-tools-wek1d.git
     ```
 2.  Proje dizinine gidin:
     ```bash
