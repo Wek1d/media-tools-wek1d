@@ -17,6 +17,31 @@
             --success: #10b981;
             --border-radius: 12px;
             --transition: all 0.3s ease;
+            
+            /* Yeni tema değişkenleri */
+            --bg-primary: var(--darker);
+            --bg-secondary: var(--dark);
+            --text-primary: var(--light);
+            --text-secondary: var(--gray);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --icon-color: var(--gray);
+            --icon-hover-bg: rgba(255, 255, 255, 0.1);
+            --control-bg: rgba(255, 255, 255, 0.05);
+            --control-hover-bg: rgba(255, 255, 255, 0.1);
+            --slider-track-bg: rgba(255, 255, 255, 0.2);
+        }
+
+        .light-mode {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --icon-color: #64748b;
+            --icon-hover-bg: rgba(0, 0, 0, 0.05);
+            --control-bg: rgba(0, 0, 0, 0.03);
+            --control-hover-bg: rgba(0, 0, 0, 0.07);
+            --slider-track-bg: rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -27,19 +52,20 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--darker);
-            color: var(--light);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
             width: 100%;
             max-width: 1200px;
-            background-color: var(--dark);
+            background-color: var(--bg-secondary);
             border-radius: var(--border-radius);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             overflow: hidden;
@@ -49,11 +75,12 @@
 
         .header {
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-color: var(--control-bg);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color var(--transition), border-color var(--transition);
         }
 
         .logo {
@@ -63,6 +90,7 @@
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--primary);
+            transition: color var(--transition);
         }
 
         .logo i {
@@ -72,6 +100,7 @@
         .controls {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .btn {
@@ -114,6 +143,27 @@
             background-color: #0d9488;
         }
 
+        /* Ayarlar butonu */
+        .settings-btn {
+            background: none;
+            border: none;
+            color: var(--icon-color);
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .settings-btn:hover {
+            color: var(--primary);
+            background-color: var(--icon-hover-bg);
+        }
+
         .content {
             display: flex;
             flex-direction: column;
@@ -126,7 +176,7 @@
             width: 100%;
             max-width: 800px;
             height: 300px;
-            border: 2px dashed var(--gray);
+            border: 2px dashed var(--text-secondary);
             border-radius: var(--border-radius);
             display: flex;
             flex-direction: column;
@@ -135,9 +185,7 @@
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
-            background-color: rgba(255, 255, 255, 0.05);
-            position: relative;
-            overflow: hidden;
+            background-color: var(--control-bg);
         }
 
         .drop-area:hover {
@@ -167,11 +215,11 @@
         .drop-area h3 {
             font-size: 1.5rem;
             margin-bottom: 10px;
-            color: var(--light);
+            color: var(--text-primary);
         }
 
         .drop-area p {
-            color: var(--gray);
+            color: var(--text-secondary);
             font-size: 1rem;
             margin-bottom: 20px;
         }
@@ -288,17 +336,25 @@
             background: rgba(255,255,255,0.1);
         }
 
-        .video-speed-control {
+/* Özel hız kontrolü için stil */
+        .custom-speed-control {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            z-index: 10;
+            user-select: none;
+        }
+
+        .custom-speed-display {
             background: rgba(255,255,255,0.1);
             border: none;
             color: white;
             padding: 5px 10px;
             border-radius: 20px;
-            cursor: pointer;
             transition: var(--transition);
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
+            display: block;
+            min-width: 80px;
+            text-align: center;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 8px center;
@@ -306,8 +362,41 @@
             padding-right: 25px;
         }
 
-        .video-speed-control:hover {
+        .custom-speed-display:hover {
             background-color: rgba(255,255,255,0.2);
+        }
+
+        .custom-speed-options {
+            list-style: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 5px 0;
+            min-width: 100px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none;
+            max-height: 200px;
+            overflow-y: hidden;
+        }
+
+        .custom-speed-options.show {
+            display: block;
+        }
+
+        .custom-speed-options li {
+            padding: 8px 15px;
+            color: var(--text-primary);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .custom-speed-options li:hover,
+        .custom-speed-options li.selected {
+            background-color: var(--primary);
+            color: white;
         }
 
         /* Ses Kontrolü */
@@ -389,7 +478,7 @@
         }
 
         .control-group h4 {
-            color: var(--gray);
+            color: var(--text-secondary);
             font-weight: 500;
             font-size: 0.9rem;
         }
@@ -403,9 +492,9 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--control-bg);
             border: none;
-            color: white;
+            color: var(--text-primary);
             font-size: 1.2rem;
             cursor: pointer;
             display: flex;
@@ -430,7 +519,7 @@
             flex-grow: 1;
             height: 6px;
             -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--slider-track-bg);
             border-radius: 3px;
             outline: none;
         }
@@ -450,7 +539,7 @@
         }
 
         .file-info {
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: var(--control-bg);
             padding: 10px 15px;
             border-radius: var(--border-radius);
             display: flex;
@@ -506,10 +595,10 @@
 
         .filter-btn {
             padding: 8px 15px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--control-bg);
             border: none;
             border-radius: 20px;
-            color: white;
+            color: var(--text-primary);
             cursor: pointer;
             transition: var(--transition);
             font-size: 0.85rem;
@@ -530,9 +619,9 @@
         }
 
         .crop-btn {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--control-bg);
             border: none;
-            color: white;
+            color: var(--text-primary);
             padding: 8px 15px;
             border-radius: 20px;
             cursor: pointer;
@@ -548,6 +637,255 @@
             flex-direction: column;
             gap: 10px;
             margin-top: 15px;
+        }
+
+        /* Paylaş Butonu ve Popup */
+        .share-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .share-btn:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .share-popup {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: scale(0.8);
+            opacity: 0;
+            transform-origin: bottom right;
+            transition: var(--transition);
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .share-popup.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .share-popup header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .share-popup header span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .share-popup .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .share-popup .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .share-popup .content p {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .share-popup .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .share-popup .social-icons a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--control-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .share-popup .social-icons a:hover {
+            transform: scale(1.1);
+            background-color: var(--primary);
+        }
+
+        .share-popup .link-field {
+            display: flex;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .share-popup .link-field input {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--control-bg);
+            border: none;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .share-popup .link-field button {
+            padding: 8px 15px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .share-popup .link-field button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Loop button */
+        .loop-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .loop-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .loop-btn.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        /* Ayarlar Popup */
+        .settings-popup {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 280px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            animation: slideInSettings 0.25s forwards;
+            transition: background-color var(--transition), border-color var(--transition);
+        }
+
+        @keyframes slideInSettings {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .settings-popup h4 {
+            margin: 0 0 8px 0;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            font-size: 0.95rem;
+            transition: color var(--transition), border-color var(--transition);
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .setting-option span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: color var(--transition);
+        }
+
+        .theme-toggle {
+            display: flex;
+            background-color: var(--control-bg);
+            border-radius: 20px;
+            padding: 3px;
+            transition: background-color var(--transition);
+        }
+
+        .theme-toggle button {
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 18px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: background-color var(--transition), color var(--transition);
+        }
+
+        .theme-toggle button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color var(--transition), transform var(--transition);
+        }
+
+        .color-dot.active {
+            border-color: var(--text-primary);
+            transform: scale(1.15);
         }
 
         @media (max-width: 768px) {
@@ -572,6 +910,18 @@
                 width: 100%;
                 max-width: 250px;
             }
+
+            .share-popup {
+                max-width: 90%;
+                right: 5%;
+                bottom: 100px;
+            }
+
+            .settings-popup {
+                width: calc(100% - 30px);
+                right: 15px;
+                top: 70px;
+            }
         }
     </style>
 </head>
@@ -582,12 +932,17 @@
                 <i class="fas fa-photo-video"></i>
                 <span>Wekid Media Tools Pro</span>
             </div>
-            <div class="controls" id="topControls" style="display: none;">
-                <button class="btn btn-success" onclick="downloadMedia()">
-                    <i class="fas fa-download"></i> İndir
-                </button>
-                <button class="btn btn-danger" onclick="resetAll()">
-                    <i class="fas fa-trash-alt"></i> Sıfırla
+            <div class="controls">
+                <div id="topControls" style="display: none;">
+                    <button class="btn btn-success" onclick="downloadMedia()">
+                        <i class="fas fa-download"></i> İndir
+                    </button>
+                    <button class="btn btn-danger" onclick="resetAll()">
+                        <i class="fas fa-trash-alt"></i> Sıfırla
+                    </button>
+                </div>
+                <button class="settings-btn" id="settingsBtn" title="Ayarlar">
+                    <i class="fas fa-cog"></i>
                 </button>
             </div>
         </div>
@@ -619,6 +974,9 @@
                             <button class="video-control-btn" id="playPauseBtn">
                                 <i class="fas fa-play"></i>
                             </button>
+                            <button class="video-control-btn loop-btn" id="loopBtn" title="Döngü">
+                                <i class="fas fa-redo"></i>
+                            </button>
                             <span class="video-time" id="currentTime">00:00</span>
                             <span class="video-time">/</span>
                             <span class="video-time" id="totalTime">00:00</span>
@@ -632,14 +990,19 @@
                                 </div>
                             </div>
                             
-                            <select class="video-speed-control" id="speedControl">
-                                <option value="0.5">0.5x</option>
-                                <option value="0.75">0.75x</option>
-                                <option value="1" selected>1x</option>
-                                <option value="1.25">1.25x</option>
-                                <option value="1.5">1.5x</option>
-                                <option value="2">2x</option>
-                            </select>
+                            <div class="custom-speed-control">
+                <span id="customSpeedDisplay" class="custom-speed-display">Normal</span>
+                <ul id="customSpeedOptions" class="custom-speed-options">
+                    <li data-value="0.25">0.25x</li>
+                    <li data-value="0.5">0.5x</li>
+                    <li data-value="0.75">0.75x</li>
+                    <li data-value="1" class="selected">Normal</li>
+                    <li data-value="1.25">1.25x</li>
+                    <li data-value="1.5">1.5x</li>
+                    <li data-value="1.75">1.75x</li>
+                    <li data-value="2">2x</li>
+                </ul>
+            </div>
                             
                             <button class="video-control-btn fullscreen-btn" id="fullscreenBtn">
                                 <i class="fas fa-expand"></i>
@@ -678,7 +1041,7 @@
                             </button>
                         </div>
                         <div class="slider-container">
-                            <i class="fas fa-search" style="color: var(--gray);"></i>
+                            <i class="fas fa-search" style="color: var(--text-secondary);"></i>
                             <input type="range" min="10" max="200" value="100" class="slider" id="zoomSlider" oninput="updateZoom()">
                             <span id="zoomValue">100%</span>
                         </div>
@@ -687,7 +1050,7 @@
                     <div class="control-group">
                         <h4>Parlaklık</h4>
                         <div class="slider-container">
-                            <i class="fas fa-sun" style="color: var(--gray);"></i>
+                            <i class="fas fa-sun" style="color: var(--text-secondary);"></i>
                             <input type="range" min="0" max="200" value="100" class="slider" id="brightnessSlider" oninput="updateBrightness()">
                             <span id="brightnessValue">100%</span>
                         </div>
@@ -696,7 +1059,7 @@
                     <div class="control-group">
                         <h4>Kontrast</h4>
                         <div class="slider-container">
-                            <i class="fas fa-adjust" style="color: var(--gray);"></i>
+                            <i class="fas fa-adjust" style="color: var(--text-secondary);"></i>
                             <input type="range" min="0" max="200" value="100" class="slider" id="contrastSlider" oninput="updateContrast()">
                             <span id="contrastValue">100%</span>
                         </div>
@@ -728,7 +1091,7 @@
                 
                 <div class="crop-controls" id="cropControls">
                     <div class="slider-container">
-                        <i class="fas fa-crop" style="color: var(--gray);"></i>
+                        <i class="fas fa-crop" style="color: var(--text-secondary);"></i>
                         <input type="range" min="0" max="100" value="0" class="slider" id="cropSlider" oninput="updateCrop()">
                         <span id="cropValue">0%</span>
                     </div>
@@ -751,6 +1114,63 @@
         <span id="toastMessage">İşlem başarılı!</span>
     </div>
 
+    <!-- Paylaş Butonu ve Popup -->
+    <div class="share-btn" id="shareBtn">
+        <i class="fas fa-share-alt"></i>
+    </div>
+
+    <div class="share-popup" id="sharePopup">
+        <header>
+            <span>Benimle İletişime Geçin</span>
+            <button class="close-btn" id="closeSharePopup">&times;</button>
+        </header>
+        <div class="content">
+            <p>Sosyal medya hesaplarım:</p>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/arda.kceci/" target="_blank" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://github.com/wek1d" target="_blank" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://wek1d.github.io/network-system-information/" target="_blank" title="Web Sitem">
+                    <i class="fas fa-globe"></i>
+                </a>
+                <a href="#" title="Discord: ardathewise">
+                    <i class="fab fa-discord"></i>
+                </a>
+            </div>
+            <p>Bağlantıyı paylaş:</p>
+            <div class="link-field">
+                <input type="text" id="shareLink" value="https://wek1d.github.io/media-tools-wek1d/" readonly>
+                <button id="copyLinkBtn">Kopyala</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ayarlar Popup -->
+    <div class="settings-popup" id="settingsPopup">
+        <div>
+            <h4>Tema Modu</h4>
+            <div class="setting-option">
+                <span>Görünüm</span>
+                <div class="theme-toggle">
+                    <button id="lightModeBtn" title="Aydınlık Mod"><i class="fas fa-sun"></i></button>
+                    <button id="darkModeBtn" title="Karanlık Mod"><i class="fas fa-moon"></i></button>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h4>Tema Rengi</h4>
+            <div class="setting-option">
+                <span>Palet</span>
+                <div class="color-palette" id="colorPalette">
+                    <!-- Renkler JS ile eklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // DOM Elements
         const dropArea = document.getElementById('dropArea');
@@ -771,7 +1191,7 @@
         const cropControls = document.getElementById('cropControls');
         const cropSlider = document.getElementById('cropSlider');
         const cropValue = document.getElementById('cropValue');
-        
+
         // Video Control Elements
         const customVideoControls = document.getElementById('customVideoControls');
         const playPauseBtn = document.getElementById('playPauseBtn');
@@ -782,9 +1202,9 @@
         const volumeBtn = document.getElementById('volumeBtn');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeSliderContainer = document.getElementById('volumeSliderContainer');
-        const speedControl = document.getElementById('speedControl');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
-        
+        const loopBtn = document.getElementById('loopBtn');
+
         // Sliders
         const zoomSlider = document.getElementById('zoomSlider');
         const zoomValue = document.getElementById('zoomValue');
@@ -792,7 +1212,27 @@
         const brightnessValue = document.getElementById('brightnessValue');
         const contrastSlider = document.getElementById('contrastSlider');
         const contrastValue = document.getElementById('contrastValue');
+
+        // Share Popup Elements
+        const shareBtn = document.getElementById('shareBtn');
+        const sharePopup = document.getElementById('sharePopup');
+        const closeSharePopup = document.getElementById('closeSharePopup');
+        const shareLink = document.getElementById('shareLink');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
         
+        // Hız Kontrolü Elemanları
+        const customSpeedControl = document.querySelector('.custom-speed-control');
+        const customSpeedDisplay = document.getElementById('customSpeedDisplay');
+        const customSpeedOptions = document.getElementById('customSpeedOptions');
+        const customSpeedListItems = customSpeedOptions.querySelectorAll('li');
+
+        // Ayarlar Popup Elemanları
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPopup = document.getElementById('settingsPopup');
+        const lightModeBtn = document.getElementById('lightModeBtn');
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        const colorPalette = document.getElementById('colorPalette');
+
         // State variables
         let currentRotation = 0;
         let currentScale = 1;
@@ -810,49 +1250,117 @@
         let currentFlip = '';
         let isCropping = false;
         let originalImageSrc = '';
-        
+        let isLoopEnabled = false;
+
+        // Tema renkleri
+        const themeColors = [
+            { name: 'indigo', primary: '#6366f1', dark: '#4f46e5' },
+            { name: 'sky', primary: '#38bdf8', dark: '#0ea5e9' },
+            { name: 'emerald', primary: '#34d399', dark: '#059669' },
+            { name: 'rose', primary: '#f43f5e', dark: '#e11d48' },
+            { name: 'amber', primary: '#f59e0b', dark: '#d97706' },
+            { name: 'violet', primary: '#8b5cf6', dark: '#7c3aed' },
+        ];
+
+        // Initialize settings
+        function initializeSettings() {
+            // Renk paletini oluştur
+            themeColors.forEach(color => {
+                const dot = document.createElement('div');
+                dot.className = 'color-dot';
+                dot.style.backgroundColor = color.primary;
+                dot.dataset.colorName = color.name;
+                dot.title = color.name.charAt(0).toUpperCase() + color.name.slice(1);
+                dot.onclick = () => applyThemeColor(color.name);
+                colorPalette.appendChild(dot);
+            });
+
+            // Kayıtlı tema ayarlarını yükle
+            const savedMode = localStorage.getItem('mediaToolsThemeMode') || 'dark';
+            const savedColor = localStorage.getItem('mediaToolsThemeColor') || 'indigo';
+            applyThemeMode(savedMode);
+            applyThemeColor(savedColor);
+        }
+
+        // Tema modunu uygula
+        function applyThemeMode(mode) {
+            document.body.classList.toggle('light-mode', mode === 'light');
+            lightModeBtn.classList.toggle('active', mode === 'light');
+            darkModeBtn.classList.toggle('active', mode === 'dark');
+            localStorage.setItem('mediaToolsThemeMode', mode);
+        }
+
+        // Tema rengini uygula
+        function applyThemeColor(colorName) {
+            const color = themeColors.find(c => c.name === colorName);
+            if (!color) return;
+            
+            document.documentElement.style.setProperty('--primary', color.primary);
+            document.documentElement.style.setProperty('--primary-dark', color.dark);
+            
+            // Aktif renk dot'unu güncelle
+            document.querySelectorAll('.color-dot').forEach(dot => {
+                dot.classList.toggle('active', dot.dataset.colorName === colorName);
+            });
+            
+            localStorage.setItem('mediaToolsThemeColor', colorName);
+        }
+
+        // Ayarlar popup'ını aç/kapat
+        function toggleSettingsPopup(e) {
+            e.stopPropagation();
+            settingsPopup.style.display = settingsPopup.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Ayarlar popup'ını dışarı tıklayınca kapat
+        function closeSettingsPopupOnOutsideClick(e) {
+            if (!settingsPopup.contains(e.target) && e.target !== settingsBtn) {
+                settingsPopup.style.display = 'none';
+            }
+        }
+
         // Event Listeners
         selectFileBtn.addEventListener('click', () => fileInput.click());
-        
+
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) handleFile(file);
         });
-        
+
         // Drag and drop events
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);
         });
-        
+
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
         }
-        
+
         ['dragenter', 'dragover'].forEach(eventName => {
             dropArea.addEventListener(eventName, highlight, false);
         });
-        
+
         ['dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, unhighlight, false);
         });
-        
+
         function highlight() {
             dropArea.classList.add('highlight');
         }
-        
+
         function unhighlight() {
             dropArea.classList.remove('highlight');
         }
-        
+
         dropArea.addEventListener('drop', handleDrop, false);
-        
+
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const file = dt.files[0];
             if (file) handleFile(file);
         }
-        
+
         // Paste from clipboard
         document.addEventListener('paste', (e) => {
             const items = e.clipboardData.items;
@@ -867,55 +1375,73 @@
                 }
             }
         });
-        
-        // Handle file
+
         function handleFile(file) {
             if (!file.type.match('image.*') && !file.type.match('video.*')) {
                 showToast('Sadece resim ve video dosyaları desteklenmektedir', 'error');
                 return;
             }
-            
+
             currentFile = file;
             const reader = new FileReader();
-            
+
             reader.onload = (e) => {
+                resetAllTransformations();
+
                 if (file.type.match('image.*')) {
+                    isImage = true;
                     uploadedImage.src = e.target.result;
+                    originalImageSrc = e.target.result;
                     uploadedImage.style.display = 'block';
                     uploadedVideo.style.display = 'none';
                     uploadedVideo.pause();
-                    customVideoControls.style.display = 'none';
-                    isImage = true;
-                    originalImageSrc = e.target.result;
+                    
+                    // FOTOĞRAF İÇİN AYARLAR
+                    customVideoControls.style.display = 'flex'; // Kontrol barını göster
+                    // İstenmeyen video butonlarını gizle
+                    playPauseBtn.style.display = 'none';
+                    loopBtn.style.display = 'none';
+                    document.getElementById('currentTime').style.display = 'none';
+                    document.getElementById('totalTime').style.display = 'none';
+                    document.querySelector('.video-time + .video-time').style.display = 'none'; // "/" işaretini gizle
+                    videoProgress.style.display = 'none';
+                    volumeBtn.parentElement.style.display = 'none'; // volume-control div'ini gizle
+                    customSpeedControl.style.display = 'none';
+                    
                 } else if (file.type.match('video.*')) {
+                    isImage = false;
                     uploadedVideo.src = e.target.result;
                     uploadedImage.style.display = 'none';
                     uploadedVideo.style.display = 'block';
-                    customVideoControls.style.display = 'flex';
+
+                    // VİDEO İÇİN AYARLAR
+                    customVideoControls.style.display = 'flex'; // Kontrol barını göster
+                    // Tüm video butonlarını görünür yap
+                    playPauseBtn.style.display = 'flex';
+                    loopBtn.style.display = 'flex';
+                    document.getElementById('currentTime').style.display = 'inline';
+                    document.getElementById('totalTime').style.display = 'inline';
+                    document.querySelector('.video-time + .video-time').style.display = 'inline'; // "/" işaretini göster
+                    videoProgress.style.display = 'block';
+                    volumeBtn.parentElement.style.display = 'block'; // volume-control div'ini göster
+                    customSpeedControl.style.display = 'inline-block';
+
                     setupVideoControls();
-                    isImage = false;
                 }
-                
-                // Reset transformations for new file
-                resetAllTransformations();
-                
-                // Update file info
+
                 fileName.textContent = file.name;
                 fileSize.textContent = formatFileSize(file.size);
                 fileInfo.style.display = 'flex';
-                
-                // Show media container and controls
                 mediaContainer.style.display = 'flex';
                 topControls.style.display = 'flex';
                 dropArea.style.display = 'none';
-                
+
                 showToast('Medya başarıyla yüklendi');
             };
-            
+
             reader.readAsDataURL(file);
         }
-        
-        // Format file size
+
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -923,102 +1449,113 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
-        
-        // Video Controls Setup
+
         function setupVideoControls() {
-            // Reset video state
             isVideoPlaying = false;
             playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            
-            // Event listeners for video
+            isLoopEnabled = false;
+            loopBtn.classList.remove('active');
+
             uploadedVideo.addEventListener('play', () => {
                 isVideoPlaying = true;
                 playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
             });
-            
+
             uploadedVideo.addEventListener('pause', () => {
                 isVideoPlaying = false;
                 playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
             });
-            
+
             uploadedVideo.addEventListener('timeupdate', updateVideoProgress);
             uploadedVideo.addEventListener('loadedmetadata', () => {
                 totalTimeDisplay.textContent = formatTime(uploadedVideo.duration);
             });
-            
+
             uploadedVideo.addEventListener('ended', () => {
-                isVideoPlaying = false;
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                uploadedVideo.currentTime = 0;
-                updateVideoProgress();
+                if (isLoopEnabled) {
+                    uploadedVideo.currentTime = 0;
+                    uploadedVideo.play();
+                } else {
+                    isVideoPlaying = false;
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    uploadedVideo.currentTime = 0;
+                    updateVideoProgress();
+                }
             });
-            
-            // Control buttons
-            playPauseBtn.addEventListener('click', togglePlayPause);
-            
-            videoProgress.addEventListener('click', (e) => {
+
+            playPauseBtn.onclick = togglePlayPause;
+            videoProgress.onclick = (e) => {
                 const rect = videoProgress.getBoundingClientRect();
                 const pos = (e.clientX - rect.left) / rect.width;
                 uploadedVideo.currentTime = pos * uploadedVideo.duration;
-            });
-            
-            volumeBtn.addEventListener('click', toggleVolumeSlider);
-            
-            volumeSlider.addEventListener('input', () => {
+            };
+            volumeBtn.onclick = toggleVolumeSlider;
+            volumeSlider.oninput = () => {
                 uploadedVideo.volume = volumeSlider.value;
                 updateVolumeIcon();
-                // Otomatik kapanma süresini sıfırla
                 clearTimeout(hideVolumeTimeout);
                 hideVolumeTimeout = setTimeout(() => {
                     volumeSliderContainer.style.display = 'none';
                     isVolumeOpen = false;
                 }, 2000);
-            });
-            
-            speedControl.addEventListener('change', () => {
-                uploadedVideo.playbackRate = parseFloat(speedControl.value);
-            });
-            
-            fullscreenBtn.addEventListener('click', toggleFullscreen);
-            
-            // Video kapsayıcısına tıklayınca play/pause
-            mediaPreviewContainer.addEventListener('click', (e) => {
-                if (!isImage && e.target.id !== 'volumeSlider' && e.target.id !== 'speedControl') {
+            };
+            loopBtn.onclick = toggleLoop;
+
+            mediaPreviewContainer.onclick = (e) => {
+                if (!isImage && !customVideoControls.contains(e.target)) {
                     togglePlayPause();
                 }
-            });
-            
-            // Hide controls when not interacting
-            mediaPreview.addEventListener('mousemove', showVideoControls);
+            };
+
+            mediaPreviewContainer.ondblclick = (e) => {
+                 if (!customVideoControls.contains(e.target)) {
+                    toggleFullscreen();
+                }
+            };
+
+            mediaPreviewContainer.addEventListener('mousemove', showVideoControls);
             customVideoControls.addEventListener('mouseleave', startHideControlsTimer);
         }
         
+        // Bu Event listener'ı en dışa taşıyalım ki hem fotoğraf hem video için çalışsın.
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        document.addEventListener('keydown', handleKeyDown);
+
+
         function togglePlayPause() {
+            if (isImage) return;
             if (isVideoPlaying) {
                 uploadedVideo.pause();
             } else {
                 uploadedVideo.play();
             }
         }
-        
+
+        function toggleLoop() {
+            if (isImage) return;
+            isLoopEnabled = !isLoopEnabled;
+            loopBtn.classList.toggle('active');
+            uploadedVideo.loop = isLoopEnabled;
+            showToast(`Döngü ${isLoopEnabled ? 'açık' : 'kapalı'}`);
+        }
+
         function updateVideoProgress() {
+            if (isImage) return;
             const percent = (uploadedVideo.currentTime / uploadedVideo.duration) * 100;
             videoProgressFilled.style.width = `${percent}%`;
             currentTimeDisplay.textContent = formatTime(uploadedVideo.currentTime);
         }
-        
+
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
-        
+
         function toggleVolumeSlider() {
             isVolumeOpen = !isVolumeOpen;
             volumeSliderContainer.style.display = isVolumeOpen ? 'flex' : 'none';
-            
             if (isVolumeOpen) {
-                // 2 saniye sonra otomatik kapat
                 clearTimeout(hideVolumeTimeout);
                 hideVolumeTimeout = setTimeout(() => {
                     volumeSliderContainer.style.display = 'none';
@@ -1026,7 +1563,7 @@
                 }, 2000);
             }
         }
-        
+
         function updateVolumeIcon() {
             if (uploadedVideo.volume === 0) {
                 volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
@@ -1036,7 +1573,7 @@
                 volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
             }
         }
-        
+
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 mediaPreviewContainer.requestFullscreen().catch(err => {
@@ -1046,128 +1583,133 @@
                 document.exitFullscreen();
             }
         }
-        
+
         function showVideoControls() {
+            if(isImage) { // Resim ise sürekli göster
+                 customVideoControls.style.display = 'flex';
+                 return;
+            }
             customVideoControls.style.display = 'flex';
             clearTimeout(hideControlsTimeout);
             hideControlsTimeout = setTimeout(hideVideoControls, 3000);
         }
-        
+
         function hideVideoControls() {
             if (isVideoPlaying) {
                 customVideoControls.style.display = 'none';
             }
         }
-        
+
         function startHideControlsTimer() {
             if (isVideoPlaying) {
                 hideControlsTimeout = setTimeout(hideVideoControls, 2000);
             }
         }
-        
+
+        function handleKeyDown(e) {
+            // Tam ekran (f) tuşunu genel yapalım
+            if(e.key.toLowerCase() === 'f') {
+                 toggleFullscreen();
+                 e.preventDefault();
+            }
+            
+            if (!isImage) { // Sadece video için olan kısayollar
+                switch (e.key) {
+                    case ' ':
+                        togglePlayPause();
+                        e.preventDefault();
+                        break;
+                    case 'm':
+                        if (uploadedVideo.volume > 0) {
+                            volumeSlider.value = 0;
+                            uploadedVideo.volume = 0;
+                        } else {
+                             volumeSlider.value = 1;
+                             uploadedVideo.volume = 1;
+                        }
+                        updateVolumeIcon();
+                        e.preventDefault();
+                        break;
+                }
+            }
+        }
+
         // Media transformations
         function rotateMedia(degrees) {
             currentRotation += degrees;
             updateTransform();
         }
-        
+
         function resetRotation() {
             currentRotation = 0;
             updateTransform();
         }
-        
+
         function zoomIn() {
-            currentScale += 0.1;
+            currentScale = Math.min(2, currentScale + 0.1); // Max 200%
             zoomSlider.value = currentScale * 100;
-            zoomValue.textContent = Math.round(currentScale * 100) + '%';
-            updateTransform();
+            updateZoom();
         }
-        
+
         function zoomOut() {
-            if (currentScale > 0.1) {
-                currentScale -= 0.1;
-                zoomSlider.value = currentScale * 100;
-                zoomValue.textContent = Math.round(currentScale * 100) + '%';
-                updateTransform();
-            }
+            currentScale = Math.max(0.1, currentScale - 0.1); // Min 10%
+            zoomSlider.value = currentScale * 100;
+            updateZoom();
         }
         
         function resetZoom() {
             currentScale = 1;
             zoomSlider.value = 100;
-            zoomValue.textContent = '100%';
             translateX = 0;
             translateY = 0;
-            updateTransform();
+            updateZoom();
         }
-        
+
         function updateZoom() {
             currentScale = zoomSlider.value / 100;
-            zoomValue.textContent = zoomSlider.value + '%';
+            zoomValue.textContent = Math.round(currentScale * 100) + '%';
             updateTransform();
         }
-        
+
         function updateBrightness() {
             currentBrightness = brightnessSlider.value / 100;
             brightnessValue.textContent = brightnessSlider.value + '%';
             updateTransform();
         }
-        
+
         function updateContrast() {
             currentContrast = contrastSlider.value / 100;
             contrastValue.textContent = contrastSlider.value + '%';
             updateTransform();
         }
-        
+
         function applyFilter(filter, btn) {
             currentFilter = filter;
-            updateTransform();
-            
-            // Highlight active filter button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            updateTransform();
         }
         
+        // HATA DÜZELTMESİ: Bu fonksiyonu applyFilter'ın dışına taşıdık.
         function updateTransform() {
             const transform = `
+                translate(${translateX}px, ${translateY}px)
                 rotate(${currentRotation}deg) 
                 scale(${currentScale}) 
-                translate(${translateX}px, ${translateY}px)
                 ${currentFlip}
             `;
+
+            const filter = `
+                brightness(${currentBrightness}) 
+                contrast(${currentContrast}) 
+                ${currentFilter !== 'none' ? currentFilter : ''}
+            `;
             
-            // Apply different filters for images and videos
-            let filter = '';
-            if (isImage) {
-                filter = `
-                    brightness(${currentBrightness}) 
-                    contrast(${currentContrast}) 
-                    ${currentFilter}
-                `;
-                uploadedImage.style.filter = filter;
-                uploadedVideo.style.filter = 'none';
-            } else {
-                // For videos, only apply filters that work well
-                if (currentFilter.includes('blur') || currentFilter.includes('saturate')) {
-                    filter = currentFilter;
-                } else if (currentFilter !== 'none') {
-                    filter = currentFilter.replace(/\)$/, '') + ' brightness(' + currentBrightness + ') contrast(' + currentContrast + '))';
-                } else {
-                    filter = `
-                        brightness(${currentBrightness}) 
-                        contrast(${currentContrast})
-                    `;
-                }
-                uploadedVideo.style.filter = filter;
-                uploadedImage.style.filter = 'none';
-            }
-            
+            const targetElement = isImage ? uploadedImage : uploadedVideo;
+            targetElement.style.filter = filter;
             mediaPreview.style.transform = transform;
         }
-        
-        // Flip media
+
         function flipMedia(direction) {
             if (direction === 'horizontal') {
                 currentFlip = currentFlip.includes('scaleX(-1)') ? '' : 'scaleX(-1)';
@@ -1177,29 +1719,19 @@
             updateTransform();
         }
         
-        // Crop controls
         function toggleCropControls() {
             isCropping = !isCropping;
             cropControls.style.display = isCropping ? 'flex' : 'none';
-            
-            if (isCropping && isImage) {
-                // Kırpma moduna geçtiğinde orijinal resmi yükle
-                uploadedImage.src = originalImageSrc;
-                resetAllTransformations();
-            }
         }
-        
+
         function updateCrop() {
             if (!isImage) return;
-            
             const cropPercent = cropSlider.value;
             cropValue.textContent = `${cropPercent}%`;
-            
-            // Önizleme yapmak için CSS ile kırpma
             const borderRadius = getComputedStyle(document.documentElement).getPropertyValue('--border-radius');
-uploadedImage.style.clipPath = `inset(${cropValue / 2}% round ${borderRadius})`;
+            uploadedImage.style.clipPath = `inset(${cropPercent / 2}% round ${borderRadius})`;
         }
-        
+
         function applyCrop() {
             if (!isImage || cropSlider.value == 0) {
                 toggleCropControls();
@@ -1209,31 +1741,22 @@ uploadedImage.style.clipPath = `inset(${cropValue / 2}% round ${borderRadius})`;
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const img = new Image();
+            img.crossOrigin = "Anonymous"; // Gerekli olabilir
             
             img.onload = function() {
                 const cropPercent = cropSlider.value / 100;
-                const cropPixels = Math.min(img.width, img.height) * cropPercent / 2;
+                const cropPixelsX = (img.width * cropPercent) / 2;
+                const cropPixelsY = (img.height * cropPercent) / 2;
+
+                canvas.width = img.width - (cropPixelsX * 2);
+                canvas.height = img.height - (cropPixelsY * 2);
+
+                ctx.drawImage(img, cropPixelsX, cropPixelsY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
                 
-                canvas.width = img.width - (cropPixels * 2);
-                canvas.height = img.height - (cropPixels * 2);
+                const newSrc = canvas.toDataURL();
+                uploadedImage.src = newSrc;
+                originalImageSrc = newSrc;
                 
-                ctx.drawImage(
-                    img, 
-                    cropPixels, 
-                    cropPixels, 
-                    canvas.width, 
-                    canvas.height, 
-                    0, 
-                    0, 
-                    canvas.width, 
-                    canvas.height
-                );
-                
-                // Yeni kırpılmış resmi yükle
-                uploadedImage.src = canvas.toDataURL();
-                originalImageSrc = uploadedImage.src;
-                
-                // Kırpma kontrollerini kapat
                 toggleCropControls();
                 cropSlider.value = 0;
                 cropValue.textContent = '0%';
@@ -1244,52 +1767,27 @@ uploadedImage.style.clipPath = `inset(${cropValue / 2}% round ${borderRadius})`;
             
             img.src = originalImageSrc;
         }
-        
-        // Drag to pan when zoomed
+
         mediaPreview.addEventListener('mousedown', (e) => {
             if (currentScale <= 1) return;
-            
             isDragging = true;
             startX = e.clientX - translateX;
             startY = e.clientY - translateY;
             mediaPreview.style.cursor = 'grabbing';
         });
-        
+
         document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
-            
             translateX = e.clientX - startX;
             translateY = e.clientY - startY;
             updateTransform();
         });
-        
+
         document.addEventListener('mouseup', () => {
             isDragging = false;
             mediaPreview.style.cursor = 'grab';
         });
-        
-        // Touch events for mobile
-        mediaPreview.addEventListener('touchstart', (e) => {
-            if (currentScale <= 1) return;
-            
-            isDragging = true;
-            startX = e.touches[0].clientX - translateX;
-            startY = e.touches[0].clientY - translateY;
-        });
-        
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            
-            translateX = e.touches[0].clientX - startX;
-            translateY = e.touches[0].clientY - startY;
-            updateTransform();
-            e.preventDefault();
-        });
-        
-        document.addEventListener('touchend', () => {
-            isDragging = false;
-        });
-        
+
         function resetAllTransformations() {
             currentRotation = 0;
             currentScale = 1;
@@ -1299,96 +1797,70 @@ uploadedImage.style.clipPath = `inset(${cropValue / 2}% round ${borderRadius})`;
             currentFlip = '';
             translateX = 0;
             translateY = 0;
-            
+
             zoomSlider.value = 100;
             brightnessSlider.value = 100;
             contrastSlider.value = 100;
-            
             zoomValue.textContent = '100%';
             brightnessValue.textContent = '100%';
             contrastValue.textContent = '100%';
+
+            if (isImage) uploadedImage.style.clipPath = '';
             
-            if (isImage) {
-                uploadedImage.style.clipPath = '';
-            }
+            const targetElement = isImage ? uploadedImage : uploadedVideo;
+            targetElement.style.filter = 'none';
             
-            updateTransform();
-            
-            // Reset active filter button
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.textContent === 'Normal') {
                     btn.classList.add('active');
                 }
             });
+
+            updateTransform();
         }
-        
-        // Download media with transformations (only for images)
+
         function downloadMedia() {
             if (!currentFile) return;
-            
             if (isImage) {
                 downloadImageWithTransformations();
             } else {
-                // For videos, we can't apply transformations in download
                 const link = document.createElement('a');
                 link.href = uploadedVideo.src;
-                link.download = 'edited_' + currentFile.name;
+                link.download = 'wekidmedia_' + currentFile.name;
                 link.click();
                 showToast('Video indiriliyor (dönüşümler uygulanmadı)...');
             }
         }
-        
+
         function downloadImageWithTransformations() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const img = new Image();
-            
+            img.crossOrigin = "Anonymous";
+
             img.onload = function() {
-                // Calculate canvas size to fit the transformed image
-                const absScale = Math.abs(currentScale);
-                const rotatedWidth = Math.abs(img.width * Math.cos(currentRotation * Math.PI / 180)) + 
-                                   Math.abs(img.height * Math.sin(currentRotation * Math.PI / 180));
-                const rotatedHeight = Math.abs(img.height * Math.cos(currentRotation * Math.PI / 180)) + 
-                                    Math.abs(img.width * Math.sin(currentRotation * Math.PI / 180));
+                const angle = currentRotation * Math.PI / 180;
+                const rotatedWidth = Math.abs(img.width * Math.cos(angle)) + Math.abs(img.height * Math.sin(angle));
+                const rotatedHeight = Math.abs(img.width * Math.sin(angle)) + Math.abs(img.height * Math.cos(angle));
+
+                canvas.width = rotatedWidth * currentScale;
+                canvas.height = rotatedHeight * currentScale;
                 
-                canvas.width = rotatedWidth * absScale;
-                canvas.height = rotatedHeight * absScale;
-                
-                // Center the image
+                ctx.filter = `brightness(${currentBrightness}) contrast(${currentContrast}) ${currentFilter !== 'none' ? currentFilter : ''}`;
+
                 ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(angle);
                 
-                // Apply rotation
-                ctx.rotate(currentRotation * Math.PI / 180);
-                
-                // Apply scale and flip
                 let scaleX = currentScale;
                 let scaleY = currentScale;
-                
                 if (currentFlip.includes('scaleX(-1)')) scaleX *= -1;
                 if (currentFlip.includes('scaleY(-1)')) scaleY *= -1;
-                
                 ctx.scale(scaleX, scaleY);
-                
-                // Draw image
+
                 ctx.drawImage(img, -img.width / 2, -img.height / 2);
-                
-                // Create another canvas for filters
-                const filterCanvas = document.createElement('canvas');
-                const filterCtx = filterCanvas.getContext('2d');
-                filterCanvas.width = canvas.width;
-                filterCanvas.height = canvas.height;
-                
-                // Apply filters
-                filterCtx.filter = `
-                    brightness(${currentBrightness}) 
-                    contrast(${currentContrast}) 
-                    ${currentFilter}
-                `;
-                filterCtx.drawImage(canvas, 0, 0);
-                
-                // Convert to blob and download
-                filterCanvas.toBlob(blob => {
+
+                canvas.toBlob(blob => {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
                     link.download = 'edited_' + currentFile.name;
@@ -1396,48 +1868,99 @@ uploadedImage.style.clipPath = `inset(${cropValue / 2}% round ${borderRadius})`;
                     showToast('Düzenlenmiş resim indiriliyor...');
                 }, 'image/png');
             };
-            
+
             img.src = originalImageSrc;
         }
-        
-        // Reset all
+
         function resetAll() {
             uploadedImage.src = '#';
             uploadedVideo.src = '#';
             uploadedImage.style.display = 'none';
             uploadedVideo.style.display = 'none';
-            uploadedVideo.pause();
-            
+            if(!isImage && uploadedVideo.pause) uploadedVideo.pause();
+
             mediaContainer.style.display = 'none';
             topControls.style.display = 'none';
             fileInfo.style.display = 'none';
             dropArea.style.display = 'flex';
-            
+            customVideoControls.style.display = 'none';
+
             currentFile = null;
             originalImageSrc = '';
             resetAllTransformations();
-            
-            // Reset file input
             fileInput.value = '';
             
-            // Close crop controls if open
             isCropping = false;
             cropControls.style.display = 'none';
             cropSlider.value = 0;
             cropValue.textContent = '0%';
         }
         
-        // Toast notification
         function showToast(message, type = 'success') {
             toastMessage.textContent = message;
             toast.className = 'toast';
             toast.classList.add(type === 'error' ? 'error' : 'success');
             toast.classList.add('show');
-            
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
         }
+
+        // Share Popup
+        shareBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sharePopup.classList.toggle('show');
+        });
+        closeSharePopup.addEventListener('click', () => sharePopup.classList.remove('show'));
+        copyLinkBtn.addEventListener('click', () => {
+            shareLink.select();
+            document.execCommand('copy');
+            showToast('Bağlantı kopyalandı!');
+        });
+
+        // Hız Kontrolü
+        customSpeedDisplay.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customSpeedOptions.classList.toggle('show');
+        });
+
+        customSpeedListItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const selectedValue = item.dataset.value;
+                const selectedText = item.textContent;
+
+                uploadedVideo.playbackRate = parseFloat(selectedValue);
+                customSpeedDisplay.textContent = selectedText;
+
+                customSpeedListItems.forEach(li => li.classList.remove('selected'));
+                item.classList.add('selected');
+
+                customSpeedOptions.classList.remove('show');
+                showToast(`Hız: ${selectedText}`);
+            });
+        });
+
+        // Ayarlar Popup
+        settingsBtn.addEventListener('click', toggleSettingsPopup);
+        lightModeBtn.addEventListener('click', () => applyThemeMode('light'));
+        darkModeBtn.addEventListener('click', () => applyThemeMode('dark'));
+        document.addEventListener('click', closeSettingsPopupOnOutsideClick);
+
+        // Dışarı tıklayınca popup ve menüleri kapat
+        document.addEventListener('click', (e) => {
+            if (!sharePopup.contains(e.target) && e.target !== shareBtn) {
+                sharePopup.classList.remove('show');
+            }
+            if (!customSpeedControl.contains(e.target)) {
+                customSpeedOptions.classList.remove('show');
+            }
+            if (!settingsPopup.contains(e.target) && e.target !== settingsBtn) {
+                settingsPopup.style.display = 'none';
+            }
+        });
+
+        // Uygulama başlangıcında ayarları yükle
+        initializeSettings();
     </script>
 </body>
 </html>
